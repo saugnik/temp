@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch JSON Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #data-container {
+            margin-top: 20px;
+        }
+        .profile {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .profile img {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fetch Data from JSON</h1>
+    <button id="fetch-button">Fetch Data</button>
+    <div id="data-container"></div>
+
+    <script>
+        document.getElementById('fetch-button').addEventListener('click', fetchData);
+
+        function fetchData() {
+            fetch('crewData.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayData(data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        function displayData(data) {
+            const dataContainer = document.getElementById('data-container');
+            dataContainer.innerHTML = ''; // Clear previous data
+
+            data.forEach(member => {
+                const profileDiv = document.createElement('div');
+                profileDiv.className = 'profile';
+
+                const name = document.createElement('h2');
+                name.textContent = `${member.firstName} ${member.lastName}`;
+
+                const country = document.createElement('p');
+                country.textContent = `Country: ${member.countryName}`;
+
+                const location = document.createElement('p');
+                location.textContent = `Location: ${member.location}`;
+
+                const profile128 = document.createElement('img');
+                profile128.src = member.image.profile128;
+                profile128.alt = `${member.firstName} ${member.lastName}`;
+                profile128.width = 128;
+                profile128.height = 128;
+
+                const profile480 = document.createElement('img');
+                profile480.src = member.image.profile480;
+                profile480.alt = `${member.firstName} ${member.lastName}`;
+                profile480.width = 480;
+                profile480.height = 480;
+
+                profileDiv.appendChild(name);
+                profileDiv.appendChild(profile128);
+                profileDiv.appendChild(profile480);
+
+                dataContainer.appendChild(profileDiv);
+            });
+        }
+    </script>
+</body>
+</html>
